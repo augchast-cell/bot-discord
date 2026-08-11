@@ -34,7 +34,7 @@ const upload = multer({
     const allowed = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
 
     if (!allowed.includes(file.mimetype)) {
-      return cb(new Error('Format image non autorisÃ©'));
+      return cb(new Error('Format image non autorisé'));
     }
 
     cb(null, true);
@@ -51,15 +51,24 @@ app.use(session({
   cookie: { maxAge: 7 * 86400000, httpOnly: true, sameSite: 'lax' },
 }));
 
-const redirectUri = () => `${process.env.BASE_URL || 'http://localhost:3000'}/auth/callback`;
+function redirectUri(req) {
+  const configured = process.env.BASE_URL?.trim().replace(/\/$/, '');
+  // Une ancienne valeur localhost ne doit jamais renvoyer un visiteur distant
+  // vers son propre ordinateur. Dans ce cas, on reprend l'adresse réellement
+  // utilisée pour ouvrir le panel.
+  const base = configured && !/^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/i.test(configured)
+    ? configured
+    : `${req.protocol}://${req.get('host')}`;
+  return `${base}/auth/callback`;
+}
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 //  AUTHENTIFICATION DISCORD (OAuth2)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 app.get('/auth/login', (req, res) => {
   const params = new URLSearchParams({
     client_id: process.env.CLIENT_ID,
-    redirect_uri: redirectUri(),
+    redirect_uri: redirectUri(req),
     response_type: 'code',
     scope: 'identify guilds',
   });
@@ -79,7 +88,7 @@ app.get('/auth/callback', async (req, res) => {
         client_secret: process.env.CLIENT_SECRET,
         grant_type: 'authorization_code',
         code,
-        redirect_uri: redirectUri(),
+        redirect_uri: redirectUri(req),
       }),
     });
     const token = await tokenRes.json();
@@ -90,8 +99,8 @@ app.get('/auth/callback', async (req, res) => {
     const guilds = await (await fetch('https://discord.com/api/users/@me/guilds', auth)).json();
     if (!Array.isArray(guilds)) return res.redirect('/?erreur=serveur');
 
-    // On ne garde que les serveurs oÃ¹ le membre peut gÃ©rer le serveur
-    // ET oÃ¹ le bot est effectivement prÃ©sent.
+    // On ne garde que les serveurs où le membre peut gérer le serveur
+    // ET où le bot est effectivement présent.
     const accessibles = guilds
       .filter(g => (BigInt(g.permissions) & PermissionFlagsBits.ManageGuild) !== 0n)
       .filter(g => client.guilds.cache.has(g.id))
@@ -121,13 +130,13 @@ function requireAuth(req, res, next) {
   next();
 }
 
-// VÃ©rifie que le serveur demandÃ© fait partie de ceux autorisÃ©s pour cette session
+// Vérifie que le serveur demandé fait partie de ceux autorisés pour cette session
 function requireGuild(req, res, next) {
   if (!req.session.user) return res.status(401).json({ erreur: 'Connexion requise' });
 
   const id = req.params.guildId;
   if (!req.session.guilds || !req.session.guilds.includes(id)) {
-    return res.status(403).json({ erreur: "Tu n'as pas accÃ¨s Ã  ce serveur" });
+    return res.status(403).json({ erreur: "Tu n'as pas accès à ce serveur" });
   }
 
   req.guild = client.guilds.cache.get(id);
@@ -135,9 +144,9 @@ function requireGuild(req, res, next) {
   next();
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 //  SESSION & LISTE DES SERVEURS
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 app.get('/api/me', (req, res) => {
   if (!req.session.user) return res.json({ user: null });
 
@@ -154,9 +163,9 @@ app.get('/api/me', (req, res) => {
   res.json({ user: req.session.user, guilds });
 });
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-//  DONNÃ‰ES D'UN SERVEUR
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
+//  DONNÉES D'UN SERVEUR
+// ─────────────────────────────────────────────
 app.get('/api/g/:guildId', requireGuild, (req, res) => {
   const g = req.guild;
   const me = g.members.me;
@@ -166,7 +175,7 @@ app.get('/api/g/:guildId', requireGuild, (req, res) => {
     name: g.name,
     icon: g.iconURL({ size: 128 }),
     memberCount: g.memberCount,
-    // Sert Ã  prÃ©venir dans l'interface si le bot est mal placÃ©
+    // Sert à prévenir dans l'interface si le bot est mal placé
     botRolePosition: me.roles.highest.position,
     highestRolePosition: g.roles.cache
       .filter(r => r.id !== g.id && !r.managed)
@@ -202,8 +211,8 @@ app.put('/api/g/:guildId/config', requireGuild, (req, res) => {
     const channel = welcome.channelId && req.guild.channels.cache.get(welcome.channelId);
     const role = welcome.roleId && req.guild.roles.cache.get(welcome.roleId);
     if (welcome.enabled && !channel?.isTextBased()) return res.status(400).json({ erreur: 'Choisis un salon de bienvenue valide.' });
-    if (welcome.roleId && (!role || role.managed)) return res.status(400).json({ erreur: 'Choisis un rÃ´le de bienvenue valide.' });
-    if (welcome.embed?.color && !/^#[0-9a-f]{6}$/i.test(welcome.embed.color)) return res.status(400).json({ erreur: "La couleur de l'embed doit Ãªtre au format #RRGGBB." });
+    if (welcome.roleId && (!role || role.managed)) return res.status(400).json({ erreur: 'Choisis un rôle de bienvenue valide.' });
+    if (welcome.embed?.color && !/^#[0-9a-f]{6}$/i.test(welcome.embed.color)) return res.status(400).json({ erreur: "La couleur de l'embed doit être au format #RRGGBB." });
   }
   res.json(store.set(req.params.guildId, req.body));
 });
@@ -219,7 +228,7 @@ app.post('/api/g/:guildId/config/copy', requireGuild, (req, res) => {
     return res.status(403).json({ erreur: 'Serveur source inaccessible' });
   }
 
-  // Les identifiants de salons et de rÃ´les ne valent que sur leur serveur
+  // Les identifiants de salons et de rôles ne valent que sur leur serveur
   const src = store.get(source);
   const copie = {
     welcome: { ...src.welcome, channelId: null, roleId: null, enabled: false },
@@ -231,9 +240,9 @@ app.post('/api/g/:guildId/config/copy', requireGuild, (req, res) => {
   res.json(store.set(req.params.guildId, copie));
 });
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-//  PRÃ‰SENCE (rÃ©glage global du bot)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
+//  PRÉSENCE (réglage global du bot)
+// ─────────────────────────────────────────────
 app.get('/api/global', requireAuth, (req, res) => res.json(store.getGlobal()));
 
 app.put('/api/global', requireAuth, (req, res) => {
@@ -242,9 +251,9 @@ app.put('/api/global', requireAuth, (req, res) => {
   res.json(config);
 });
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 //  STATUT
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 app.get('/api/status', requireAuth, (req, res) => {
   res.json({
     online: client.isReady(),
@@ -257,9 +266,9 @@ app.get('/api/status', requireAuth, (req, res) => {
   });
 });
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 //  TICKETS
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 app.get('/api/g/:guildId/tickets', requireGuild, (req, res) => {
   const g = req.guild;
 
@@ -273,7 +282,7 @@ app.get('/api/g/:guildId/tickets', requireGuild, (req, res) => {
         name: c.name,
         type: t.typeId,
         createdAt: c.createdTimestamp,
-        claimed: c.name.startsWith('âœ‹'),
+        claimed: c.name.startsWith('✋'),
         user: member ? member.user.username : t.userId,
         avatar: member ? member.user.displayAvatarURL({ size: 64 }) : null,
       };
@@ -287,14 +296,14 @@ app.post('/api/g/:guildId/tickets/:id/close', requireGuild, async (req, res) => 
   const channel = req.guild.channels.cache.get(req.params.id);
   if (!channel) return res.status(404).json({ erreur: 'Ticket introuvable' });
 
-  await channel.send('ðŸ”’ Ticket fermÃ© depuis le panneau de contrÃ´le.').catch(() => {});
+  await channel.send('🔒 Ticket fermé depuis le panneau de contrôle.').catch(() => {});
   await closeTicket(channel, { toString: () => req.session.user.username });
   res.json({ ok: true });
 });
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 //  PANNEAU
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 app.post('/api/g/:guildId/panel/send', requireGuild, async (req, res) => {
   const channel = req.guild.channels.cache.get(req.body.channelId);
   if (!channel) return res.status(404).json({ erreur: 'Salon introuvable' });
@@ -315,7 +324,7 @@ app.post(
   upload.single('image'),
   (req, res) => {
     if (!req.file) {
-      return res.status(400).json({ erreur: 'Aucune image envoyÃ©e' });
+      return res.status(400).json({ erreur: 'Aucune image envoyée' });
     }
 
     const imageUrl = `/uploads/${req.file.filename}`;
@@ -334,4 +343,3 @@ app.post(
   }
 );
 module.exports = app;
-

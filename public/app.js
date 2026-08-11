@@ -1,12 +1,12 @@
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-//  Ã‰TAT
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-let guildId = null;   // serveur sÃ©lectionnÃ©
+// ─────────────────────────────────────────────
+//  ÉTAT
+// ─────────────────────────────────────────────
+let guildId = null;   // serveur sélectionné
 let guilds = [];      // serveurs accessibles
-let guild = null;     // dÃ©tails du serveur sÃ©lectionnÃ©
-let config = null;    // config enregistrÃ©e (serveur)
-let draft = null;     // config en cours d'Ã©dition (serveur)
-let global = null;    // prÃ©sence du bot (enregistrÃ©e)
+let guild = null;     // détails du serveur sélectionné
+let config = null;    // config enregistrée (serveur)
+let draft = null;     // config en cours d'édition (serveur)
+let global = null;    // présence du bot (enregistrée)
 let globalDraft = null;
 const pings = [];
 
@@ -21,7 +21,7 @@ const set = (obj, path, val) => {
   keys.reduce((a, k) => (a[k] = a[k] || {}), obj)[last] = val;
 };
 
-// Les chemins commenÃ§ant par "bot." visent la prÃ©sence, qui est globale
+// Les chemins commençant par "bot." visent la présence, qui est globale
 const isGlobal = (path) => path.startsWith('bot.');
 const target = (path) => (isGlobal(path) ? globalDraft : draft);
 
@@ -48,14 +48,14 @@ function toast(message, bad = false) {
   el._t = setTimeout(() => el.classList.add('hidden'), 3200);
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-//  DÃ‰MARRAGE
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
+//  DÉMARRAGE
+// ─────────────────────────────────────────────
 const ERREURS = {
-  acces_refuse: "Aucun serveur accessible. Il faut la permission Â« GÃ©rer le serveur Â» sur un serveur oÃ¹ le bot est prÃ©sent.",
-  token_refuse: 'Discord a refusÃ© la connexion. VÃ©rifie le CLIENT_SECRET.',
-  code_manquant: 'Connexion interrompue. RÃ©essaye.',
-  serveur: 'Le serveur a rencontrÃ© une erreur.',
+  acces_refuse: "Aucun serveur accessible. Il faut la permission « Gérer le serveur » sur un serveur où le bot est présent.",
+  token_refuse: 'Discord a refusé la connexion. Vérifie le CLIENT_SECRET.',
+  code_manquant: 'Connexion interrompue. Réessaye.',
+  serveur: 'Le serveur a rencontré une erreur.',
 };
 
 (async function init() {
@@ -80,7 +80,7 @@ const ERREURS = {
   guildId = localStorage.getItem('guildId');
   if (!guilds.some(x => x.id === guildId)) guildId = guilds[0].id;
 
-  // Le sÃ©lecteur ne sert Ã  rien s'il n'y a qu'un serveur
+  // Le sélecteur ne sert à rien s'il n'y a qu'un serveur
   if (guilds.length > 1) {
     $('#switcher').classList.remove('hidden');
     $('#guild-select').innerHTML = guilds
@@ -101,7 +101,7 @@ const ERREURS = {
 
 async function switchGuild(id) {
   if (dirty()) {
-    if (!confirm('Des modifications ne sont pas enregistrÃ©es. Changer de serveur les perdra.')) {
+    if (!confirm('Des modifications ne sont pas enregistrées. Changer de serveur les perdra.')) {
       $('#guild-select').value = guildId;
       return;
     }
@@ -119,13 +119,13 @@ async function loadGuild() {
   $('#guild-name').textContent = guild.name;
   $('#guild-members').textContent = `${guild.memberCount} membres`;
 
-  // PrÃ©vient si le bot ne pourra pas sanctionner
+  // Prévient si le bot ne pourra pas sanctionner
   $('#hierarchy-alert').classList.toggle(
     'hidden', guild.botRolePosition > guild.highestRolePosition,
   );
 
   if (guilds.length > 1) {
-    $('#copy-from').innerHTML = '<option value="">Choisir un serveurâ€¦</option>' +
+    $('#copy-from').innerHTML = '<option value="">Choisir un serveur…</option>' +
       guilds.filter(x => x.id !== guildId)
         .map(x => `<option value="${x.id}">${x.name}</option>`).join('');
   }
@@ -138,35 +138,35 @@ async function loadGuild() {
   loadTickets();
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 //  NAVIGATION
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 $$('.nav-item').forEach(btn => btn.addEventListener('click', () => {
   $$('.nav-item').forEach(b => b.classList.toggle('active', b === btn));
   $$('.view').forEach(v => v.classList.toggle('hidden', v.dataset.view !== btn.dataset.view));
 }));
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-//  LISTES DÃ‰ROULANTES
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
+//  LISTES DÉROULANTES
+// ─────────────────────────────────────────────
 function options(select, items, vide) {
   select.innerHTML = `<option value="">${vide}</option>` +
     items.map(i => `<option value="${i.id}">${i.name}</option>`).join('');
 }
 
 function fillSelects() {
-  options($('#w-channel'), guild.textChannels, 'Choisir un salonâ€¦');
-  options($('#w-role'), guild.roles, 'Ne pas attribuer de rÃ´le');
+  options($('#w-channel'), guild.textChannels, 'Choisir un salon…');
+  options($('#w-role'), guild.roles, 'Ne pas attribuer de rôle');
   options($('#t-category'), guild.categories, 'Aucune (racine du serveur)');
-  options($('#t-staff'), guild.roles, 'Aucun rÃ´le');
+  options($('#t-staff'), guild.roles, 'Aucun rôle');
   options($('#t-log'), guild.textChannels, 'Ne rien enregistrer');
   options($('#m-log'), guild.textChannels, 'Ne rien enregistrer');
-  options($('#panel-channel'), guild.textChannels, 'Choisir un salonâ€¦');
+  options($('#panel-channel'), guild.textChannels, 'Choisir un salon…');
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-//  LIAISON CHAMPS â†” BROUILLON
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
+//  LIAISON CHAMPS ↔ BROUILLON
+// ─────────────────────────────────────────────
 function bindFields() {
   $$('[data-path]').forEach(el => {
     const path = el.dataset.path;
@@ -212,9 +212,9 @@ function markDirty() {
   $('#savebar').classList.toggle('hidden', !dirty());
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-//  CATÃ‰GORIES DE TICKETS
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
+//  CATÉGORIES DE TICKETS
+// ─────────────────────────────────────────────
 function renderTypes() {
   const box = $('#types');
   box.innerHTML = '';
@@ -223,17 +223,17 @@ function renderTypes() {
     const row = document.createElement('div');
     row.className = 'type-row';
     row.innerHTML = `
-      <input value="${type.emoji || ''}" placeholder="ðŸŽ«" aria-label="Emoji">
+      <input value="${type.emoji || ''}" placeholder="🎫" aria-label="Emoji">
       <input value="${type.label || ''}" placeholder="Nom" aria-label="Nom">
       <input value="${type.description || ''}" placeholder="Description" aria-label="Description">
-      <button class="type-del" title="Supprimer">Ã—</button>`;
+      <button class="type-del" title="Supprimer">×</button>`;
 
     const [emoji, label, desc] = row.querySelectorAll('input');
     emoji.addEventListener('input', () => { type.emoji = emoji.value; markDirty(); });
     desc.addEventListener('input', () => { type.description = desc.value; markDirty(); });
     label.addEventListener('input', () => {
       type.label = label.value;
-      // L'identifiant sert au nom du salon : on le dÃ©rive du libellÃ©
+      // L'identifiant sert au nom du salon : on le dérive du libellé
       type.id = label.value.toLowerCase().normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '').slice(0, 20) || `type-${i}`;
@@ -241,7 +241,7 @@ function renderTypes() {
     });
 
     row.querySelector('.type-del').addEventListener('click', () => {
-      if (draft.ticket.types.length === 1) return toast('Il faut au moins une catÃ©gorie.', true);
+      if (draft.ticket.types.length === 1) return toast('Il faut au moins une catégorie.', true);
       draft.ticket.types.splice(i, 1);
       renderTypes(); markDirty();
     });
@@ -251,14 +251,14 @@ function renderTypes() {
 }
 
 $('#add-type').addEventListener('click', () => {
-  if (draft.ticket.types.length >= 25) return toast('Discord limite le menu Ã  25 choix.', true);
-  draft.ticket.types.push({ id: `type-${Date.now()}`, label: 'Nouvelle catÃ©gorie', emoji: 'ðŸŽ«', description: '' });
+  if (draft.ticket.types.length >= 25) return toast('Discord limite le menu à 25 choix.', true);
+  draft.ticket.types.push({ id: `type-${Date.now()}`, label: 'Nouvelle catégorie', emoji: '🎫', description: '' });
   renderTypes(); markDirty();
 });
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 //  IMAGE DU PANNEAU
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 const imageDrop = $('#ticket-image-drop');
 const imageInput = $('#ticket-image-input');
 const imagePreviewWrap = $('#ticket-image-preview-wrap');
@@ -293,7 +293,7 @@ imageInput.addEventListener('change', () => {
 
 async function uploadTicketImage(file) {
   if (!file.type.startsWith('image/')) {
-    return toast('Le fichier doit Ãªtre une image.', true);
+    return toast('Le fichier doit être une image.', true);
   }
 
   if (file.size > 5 * 1024 * 1024) {
@@ -322,7 +322,7 @@ async function uploadTicketImage(file) {
     imagePreviewWrap.classList.remove('hidden');
 
     renderPreview();
-    toast('Image envoyÃ©e');
+    toast('Image envoyée');
   } catch (e) {
     toast(e.message, true);
   }
@@ -340,15 +340,15 @@ imageRemove.addEventListener('click', () => {
   markDirty();
 });
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-//  APERÃ‡U
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
+//  APERÇU
+// ─────────────────────────────────────────────
 function renderPreview() {
   $('#pv-embed').style.borderLeftColor = draft.appearance.color;
-  $('#pv-title').textContent = draft.ticket.panelTitle || 'â€”';
-  $('#pv-desc').textContent = draft.ticket.panelDescription || 'â€”';
+  $('#pv-title').textContent = draft.ticket.panelTitle || '—';
+  $('#pv-desc').textContent = draft.ticket.panelDescription || '—';
   $('#pv-footer').textContent = draft.appearance.footer || '';
-  $('#pv-select').textContent = draft.ticket.placeholder || 'â€”';
+  $('#pv-select').textContent = draft.ticket.placeholder || '—';
 
   const sample = (text) => String(text || '').replace(/\{(user|username|server|memberCount)\}/g, (_, key) => ({
     user: '@Nouveau membre', username: 'Nouveau membre', server: guild.name,
@@ -366,9 +366,9 @@ function renderPreview() {
   const warnings = [];
   if (draft.welcome.enabled && !draft.welcome.channelId) warnings.push('Choisis un salon de bienvenue.');
   if (channel && (!channel.welcomePermissions.viewChannel || !channel.welcomePermissions.sendMessages)) warnings.push('Le bot doit pouvoir voir ce salon et y envoyer des messages.');
-  if (channel && draft.welcome.embed.enabled && !channel.welcomePermissions.embedLinks) warnings.push('La permission IntÃ©grer des liens manque dans ce salon.');
-  if (role && !role.assignable) warnings.push('Ce rÃ´le est trop haut : place le rÃ´le du bot au-dessus.');
-  if (!guild.botPermissions.manageRoles && draft.welcome.roleId) warnings.push('La permission GÃ©rer les rÃ´les manque au bot.');
+  if (channel && draft.welcome.embed.enabled && !channel.welcomePermissions.embedLinks) warnings.push('La permission Intégrer des liens manque dans ce salon.');
+  if (role && !role.assignable) warnings.push('Ce rôle est trop haut : place le rôle du bot au-dessus.');
+  if (!guild.botPermissions.manageRoles && draft.welcome.roleId) warnings.push('La permission Gérer les rôles manque au bot.');
   $('#welcome-alert').textContent = warnings.join(' ');
   $('#welcome-alert').classList.toggle('hidden', !warnings.length);
 
@@ -395,9 +395,9 @@ function renderPreview() {
     imagePreviewWrap.classList.add('hidden');
   }
 }
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 //  ENREGISTREMENT
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 $('#save').addEventListener('click', async () => {
   try {
     if (JSON.stringify(draft) !== JSON.stringify(config)) {
@@ -409,7 +409,7 @@ $('#save').addEventListener('click', async () => {
       globalDraft = clone(global);
     }
     markDirty();
-    toast('Modifications enregistrÃ©es');
+    toast('Modifications enregistrées');
   } catch (e) {
     toast(e.message, true);
   }
@@ -428,7 +428,7 @@ $('#copy-btn').addEventListener('click', async () => {
     config = await api(g('/config/copy'), { method: 'POST', body: JSON.stringify({ from }) });
     draft = clone(config);
     bindFields(); renderTypes(); renderPreview(); markDirty();
-    toast('Configuration copiÃ©e. Reste Ã  choisir la catÃ©gorie et le rÃ´le.');
+    toast('Configuration copiée. Reste à choisir la catégorie et le rôle.');
   } catch (e) {
     toast(e.message, true);
   }
@@ -439,7 +439,7 @@ $('#send-panel').addEventListener('click', async () => {
   if (!channelId) return toast('Choisis un salon.', true);
   try {
     await api(g('/panel/send'), { method: 'POST', body: JSON.stringify({ channelId }) });
-    toast('Panneau envoyÃ©');
+    toast('Panneau envoyé');
   } catch (e) {
     toast(e.message, true);
   }
@@ -450,9 +450,9 @@ $('#logout').addEventListener('click', async () => {
   location.reload();
 });
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 //  TICKETS OUVERTS
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 async function loadTickets() {
   if (!guildId) return;
   let tickets = [];
@@ -460,7 +460,7 @@ async function loadTickets() {
 
   const box = $('#tickets-list');
   if (!tickets.length) {
-    box.innerHTML = `<div class="empty">Aucun ticket ouvert.<br>Publie le panneau pour que les membres puissent en crÃ©er un.</div>`;
+    box.innerHTML = `<div class="empty">Aucun ticket ouvert.<br>Publie le panneau pour que les membres puissent en créer un.</div>`;
     return;
   }
 
@@ -472,7 +472,7 @@ async function loadTickets() {
       <img src="${t.avatar || ''}" alt="">
       <div class="ticket-body">
         <div class="ticket-name">${t.user}</div>
-        <div class="ticket-meta">#${t.name} Â· ouvert ${ago(t.createdAt)}</div>
+        <div class="ticket-meta">#${t.name} · ouvert ${ago(t.createdAt)}</div>
       </div>
       <span class="tag ${t.claimed ? 'claimed' : ''}">${t.claimed ? 'pris en charge' : t.type}</span>
       <button class="btn btn-ghost">Fermer</button>`;
@@ -481,7 +481,7 @@ async function loadTickets() {
       e.target.disabled = true;
       try {
         await api(g(`/tickets/${t.id}/close`), { method: 'POST' });
-        toast('Ticket fermÃ©');
+        toast('Ticket fermé');
         setTimeout(loadTickets, 6000);
       } catch (err) {
         toast(err.message, true);
@@ -495,16 +495,16 @@ async function loadTickets() {
 
 function ago(ts) {
   const min = Math.floor((Date.now() - ts) / 60000);
-  if (min < 1) return "Ã  l'instant";
+  if (min < 1) return "à l'instant";
   if (min < 60) return `il y a ${min} min`;
   const h = Math.floor(min / 60);
   if (h < 24) return `il y a ${h} h`;
   return `il y a ${Math.floor(h / 24)} j`;
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-//  TÃ‰LÃ‰MÃ‰TRIE
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
+//  TÉLÉMÉTRIE
+// ─────────────────────────────────────────────
 async function tick() {
   let s;
   try {
@@ -517,9 +517,9 @@ async function tick() {
 
   $('#dot').className = `dot ${s.online ? 'live' : 'down'}`;
   $('#tele-state').textContent = s.online
-    ? `En ligne Â· ${s.guildCount} serveur${s.guildCount > 1 ? 's' : ''}`
+    ? `En ligne · ${s.guildCount} serveur${s.guildCount > 1 ? 's' : ''}`
     : 'Hors ligne';
-  $('#tele-ping').textContent = s.ping < 0 ? 'â€”' : s.ping;
+  $('#tele-ping').textContent = s.ping < 0 ? '—' : s.ping;
   $('#tele-uptime').textContent = s.uptimeText;
   $('#tele-ram').textContent = s.memory;
 
@@ -563,4 +563,3 @@ function drawSpark() {
   ctx.lineWidth = 1.5;
   ctx.stroke();
 }
-

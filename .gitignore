@@ -1,0 +1,21 @@
+# Secrets et configuration propre Ã  l'hÃ©bergement
+.env
+config.json
+
+# DÃ©pendances installÃ©es localement
+node_modules/
+
+# Fichiers envoyÃ©s depuis le panel
+public/uploads/
+
+# Fichiers temporaires et journaux
+*.tmp
+*.log
+npm-debug.log*
+
+# SystÃ¨me et Ã©diteurs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+

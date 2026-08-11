@@ -10,7 +10,7 @@
   --live:    #35D07F;
 
   --rail: 260px;
-  --cut: 10px; /* biseau angulaire, Ã©cho du monogramme Fayzen */
+  --cut: 10px; /* biseau angulaire, écho du monogramme Fayzen */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,7 +27,7 @@ body {
 .hidden { display: none !important; }
 .mono { font-family: 'JetBrains Mono', monospace; }
 
-/* â”€â”€ MONOGRAMME â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── MONOGRAMME ─────────────────────────────── */
 .mark {
   font-size: 22px;
   color: var(--crimson);
@@ -35,7 +35,7 @@ body {
   transform: translateY(-1px);
 }
 
-/* â”€â”€ CONNEXION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── CONNEXION ──────────────────────────────── */
 .login {
   min-height: 100vh;
   display: grid;
@@ -66,7 +66,7 @@ body {
 .login-card .btn { width: 100%; justify-content: center; }
 .error { color: var(--ember); margin-top: 18px !important; font-size: 13px; }
 
-/* â”€â”€ STRUCTURE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── STRUCTURE ──────────────────────────────── */
 .app { display: grid; grid-template-columns: var(--rail) 1fr; min-height: 100vh; }
 
 .rail {
@@ -108,7 +108,7 @@ body {
 .nav-item.active { color: var(--bone); border-left-color: var(--crimson); background: var(--raised); }
 .nav-item:focus-visible { outline: 2px solid var(--crimson); outline-offset: -2px; }
 
-/* â”€â”€ TÃ‰LÃ‰MÃ‰TRIE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── TÉLÉMÉTRIE ─────────────────────────────── */
 .telemetry {
   margin-top: auto;
   border-top: 1px solid var(--line);
@@ -151,7 +151,7 @@ body {
 .rail-foot button { background: none; border: 0; color: var(--ash); cursor: pointer; font-size: 15px; padding: 4px; }
 .rail-foot button:hover { color: var(--crimson); }
 
-/* â”€â”€ CONTENU â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── CONTENU ────────────────────────────────── */
 .main { padding: 44px 48px 120px; max-width: 1080px; }
 .view-head { margin-bottom: 26px; }
 .view-head h2 {
@@ -190,7 +190,7 @@ body {
 
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
 
-/* â”€â”€ FORMULAIRES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── FORMULAIRES ────────────────────────────── */
 .field { margin-bottom: 18px; }
 .field:last-child { margin-bottom: 0; }
 .field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 7px; }
@@ -233,7 +233,7 @@ input[type=color] {
 .check { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13.5px; }
 .check input { width: 16px; height: 16px; accent-color: var(--crimson); cursor: pointer; }
 
-/* â”€â”€ BOUTONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── BOUTONS ────────────────────────────────── */
 .btn {
   display: inline-flex; align-items: center; gap: 8px;
   font: inherit; font-size: 13.5px; font-weight: 500;
@@ -250,7 +250,7 @@ input[type=color] {
 .btn-ghost:hover { border-color: var(--ash); color: var(--bone); }
 .btn:focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
 
-/* â”€â”€ CATÃ‰GORIES DE TICKETS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── CATÉGORIES DE TICKETS ──────────────────── */
 .types { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
 .type-row {
   display: grid;
@@ -265,7 +265,7 @@ input[type=color] {
 }
 .type-del:hover { border-color: var(--crimson); color: var(--crimson); }
 
-/* â”€â”€ TICKETS OUVERTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── TICKETS OUVERTS ────────────────────────── */
 .tickets { display: flex; flex-direction: column; gap: 10px; }
 .ticket {
   display: flex; align-items: center; gap: 14px;
@@ -290,7 +290,7 @@ input[type=color] {
   color: var(--ash);
 }
 
-/* â”€â”€ APERÃ‡U DISCORD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── APERÇU DISCORD ─────────────────────────── */
 .discord-preview { background: #313338; padding: 16px; border-radius: 4px; }
 .welcome-toggle { margin-bottom: 22px; }
 .welcome-preview #w-pv-message { margin-bottom: 10px; white-space: pre-wrap; }
@@ -315,7 +315,7 @@ input[type=color] {
   font-size: 13.5px;
 }
 
-/* â”€â”€ BARRE DE SAUVEGARDE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── BARRE DE SAUVEGARDE ────────────────────── */
 .savebar {
   position: fixed;
   left: calc(var(--rail) + 48px);
@@ -332,7 +332,7 @@ input[type=color] {
 .savebar span { flex: 1; font-size: 13.5px; }
 @keyframes rise { from { transform: translateY(14px); opacity: 0; } }
 
-/* â”€â”€ TOAST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── TOAST ──────────────────────────────────── */
 .toast {
   position: fixed;
   top: 24px; right: 24px;
@@ -346,7 +346,7 @@ input[type=color] {
 }
 .toast.bad { border-left-color: var(--crimson); }
 
-/* â”€â”€ MOBILE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── MOBILE ─────────────────────────────────── */
 @media (max-width: 860px) {
   .app { grid-template-columns: 1fr; }
   .rail { position: static; height: auto; }
@@ -464,4 +464,3 @@ input[type=color] {
 .hidden {
   display: none !important;
 }
-

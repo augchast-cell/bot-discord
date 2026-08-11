@@ -7,22 +7,22 @@ const DEFAULTS = {
   welcome: {
     enabled: false, channelId: null, roleId: null,
     message: 'Bienvenue {user} sur **{server}** ! Tu es notre {memberCount}e membre.',
-    embed: { enabled: true, title: 'Bienvenue {username} !', description: 'Nous sommes heureux de tâ€™accueillir sur **{server}**.', color: '#E01E37', thumbnail: 'avatar' },
+    embed: { enabled: true, title: 'Bienvenue {username} !', description: 'Nous sommes heureux de t’accueillir sur **{server}**.', color: '#E01E37', thumbnail: 'avatar' },
   },
   ticket: {
     categoryId: null,
     staffRoleId: null,
     logChannelId: null,
-    panelTitle: 'ðŸŽ« Support',
-    panelDescription: "Choisis une catÃ©gorie ci-dessous pour ouvrir un ticket privÃ© avec l'Ã©quipe.",
+    panelTitle: '🎫 Support',
+    panelDescription: "Choisis une catégorie ci-dessous pour ouvrir un ticket privé avec l'équipe.",
     panelImage: null,
-    placeholder: 'Choisir une catÃ©gorie...',
-    welcomeMessage: "DÃ©cris ton problÃ¨me en dÃ©tail, l'Ã©quipe arrive.",
+    placeholder: 'Choisir une catégorie...',
+    welcomeMessage: "Décris ton problème en détail, l'équipe arrive.",
     transcript: true,
     types: [
-      { id: 'support', label: 'Support', emoji: 'ðŸ› ï¸', description: 'Un bug, une question technique' },
-      { id: 'plainte', label: 'Signalement', emoji: 'ðŸš¨', description: 'Signaler un membre' },
-      { id: 'candidature', label: 'Candidature', emoji: 'ðŸ“‹', description: 'Rejoindre la structure' },
+      { id: 'support', label: 'Support', emoji: '🛠️', description: 'Un bug, une question technique' },
+      { id: 'plainte', label: 'Signalement', emoji: '🚨', description: 'Signaler un membre' },
+      { id: 'candidature', label: 'Candidature', emoji: '📋', description: 'Rejoindre la structure' },
     ],
   },
   appearance: {
@@ -35,8 +35,8 @@ const DEFAULTS = {
   },
 };
 
-// La prÃ©sence est un rÃ©glage du bot, pas du serveur : il n'en a qu'une
-// pour tous les serveurs oÃ¹ il est prÃ©sent.
+// La présence est un réglage du bot, pas du serveur : il n'en a qu'une
+// pour tous les serveurs où il est présent.
 const GLOBAL_DEFAULTS = {
   bot: {
     activityText: 'Fayzen Structure',
@@ -47,8 +47,8 @@ const GLOBAL_DEFAULTS = {
 
 const GLOBAL_KEY = '_global';
 
-// Fusion profonde : garantit que les nouvelles clÃ©s du code apparaissent
-// dans les configs dÃ©jÃ  enregistrÃ©es, sans Ã©craser les valeurs existantes.
+// Fusion profonde : garantit que les nouvelles clés du code apparaissent
+// dans les configs déjà enregistrées, sans écraser les valeurs existantes.
 function merge(base, override) {
   const out = Array.isArray(base) ? [...base] : { ...base };
   for (const [k, v] of Object.entries(override || {})) {
@@ -68,8 +68,8 @@ function load() {
 }
 
 function save() {
-  // Ã‰criture atomique : on Ã©crit Ã  cÃ´tÃ© puis on renomme, pour ne jamais
-  // laisser un config.json Ã  moitiÃ© Ã©crit si le process meurt.
+  // Écriture atomique : on écrit à côté puis on renomme, pour ne jamais
+  // laisser un config.json à moitié écrit si le process meurt.
   const tmp = `${FILE}.tmp`;
   fs.writeFileSync(tmp, JSON.stringify(cache, null, 2));
   fs.renameSync(tmp, FILE);
@@ -107,4 +107,3 @@ module.exports = {
     return this.getGlobal();
   },
 };
-

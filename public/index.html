@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Panneau de contrÃ´le â€” Bot</title>
+<title>Panneau de contrôle — Bot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -11,30 +11,30 @@
 </head>
 <body>
 
-<!-- â”€â”€ CONNEXION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+<!-- ── CONNEXION ─────────────────────────────── -->
 <div id="login" class="login hidden">
   <div class="login-card">
-    <div class="mark">â—¤</div>
-    <h1>Panneau de contrÃ´le</h1>
-    <p>Connecte-toi avec Discord. L'accÃ¨s demande la permission Â« GÃ©rer le serveur Â».</p>
+    <div class="mark">◤</div>
+    <h1>Panneau de contrôle</h1>
+    <p>Connecte-toi avec Discord. L'accès demande la permission « Gérer le serveur ».</p>
     <a class="btn btn-primary" href="/auth/login">Se connecter avec Discord</a>
     <p id="login-error" class="error hidden"></p>
   </div>
 </div>
 
-<!-- â”€â”€ APPLICATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+<!-- ── APPLICATION ───────────────────────────── -->
 <div id="app" class="app hidden">
 
   <aside class="rail">
     <div class="rail-head">
-      <div class="mark">â—¤</div>
+      <div class="mark">◤</div>
       <div class="rail-id">
-        <div class="rail-title" id="guild-name">â€”</div>
-        <div class="rail-sub" id="guild-members">â€”</div>
+        <div class="rail-title" id="guild-name">—</div>
+        <div class="rail-sub" id="guild-members">—</div>
       </div>
     </div>
 
-    <!-- SÃ©lecteur de serveur : n'apparaÃ®t que si le bot en gÃ¨re plusieurs -->
+    <!-- Sélecteur de serveur : n'apparaît que si le bot en gère plusieurs -->
     <div class="switcher hidden" id="switcher">
       <label for="guild-select">Serveur</label>
       <select id="guild-select"></select>
@@ -46,27 +46,27 @@
       <button class="nav-item" data-view="welcome">Bienvenue</button>
       <button class="nav-item" data-view="panel">Panneau</button>
       <button class="nav-item" data-view="appearance">Apparence</button>
-      <button class="nav-item" data-view="bot">PrÃ©sence</button>
+      <button class="nav-item" data-view="bot">Présence</button>
     </nav>
 
-    <!-- Signal vital du bot, rafraÃ®chi toutes les 3 secondes -->
+    <!-- Signal vital du bot, rafraîchi toutes les 3 secondes -->
     <div class="telemetry">
       <div class="tele-row">
         <span class="dot" id="dot"></span>
-        <span class="tele-label" id="tele-state">Connexionâ€¦</span>
+        <span class="tele-label" id="tele-state">Connexion…</span>
       </div>
       <canvas id="spark" width="220" height="40"></canvas>
       <div class="tele-grid">
-        <div><b id="tele-ping">â€”</b><span>ms</span></div>
-        <div><b id="tele-uptime">â€”</b><span>uptime</span></div>
-        <div><b id="tele-ram">â€”</b><span>Mo</span></div>
+        <div><b id="tele-ping">—</b><span>ms</span></div>
+        <div><b id="tele-uptime">—</b><span>uptime</span></div>
+        <div><b id="tele-ram">—</b><span>Mo</span></div>
       </div>
     </div>
 
     <div class="rail-foot">
       <img id="me-avatar" alt="">
       <span id="me-name"></span>
-      <button id="logout" title="Se dÃ©connecter">â»</button>
+      <button id="logout" title="Se déconnecter">⏻</button>
     </div>
   </aside>
 
@@ -79,23 +79,23 @@
       </header>
 
       <div class="alert hidden" id="hierarchy-alert">
-        <b>Le rÃ´le du bot est trop bas.</b>
-        Il ne peut pas sanctionner les membres placÃ©s au-dessus de lui, mÃªme avec
-        la permission Administrateur. Remonte son rÃ´le dans
-        ParamÃ¨tres du serveur â†’ RÃ´les.
+        <b>Le rôle du bot est trop bas.</b>
+        Il ne peut pas sanctionner les membres placés au-dessus de lui, même avec
+        la permission Administrateur. Remonte son rôle dans
+        Paramètres du serveur → Rôles.
       </div>
 
       <div id="tickets-list" class="tickets"></div>
     </section>
 
     <section class="view hidden" data-view="welcome">
-      <header class="view-head"><h2>Bienvenue</h2><p>Accueille les nouveaux membres et attribue-leur automatiquement un rÃ´le.</p></header>
+      <header class="view-head"><h2>Bienvenue</h2><p>Accueille les nouveaux membres et attribue-leur automatiquement un rôle.</p></header>
       <div class="alert hidden" id="welcome-alert"></div>
       <div class="split">
         <div class="card">
-          <label class="check welcome-toggle"><input type="checkbox" data-path="welcome.enabled"><span>Activer le systÃ¨me de bienvenue</span></label>
+          <label class="check welcome-toggle"><input type="checkbox" data-path="welcome.enabled"><span>Activer le système de bienvenue</span></label>
           <div class="field"><label for="w-channel">Salon de bienvenue</label><select id="w-channel" data-path="welcome.channelId"></select></div>
-          <div class="field"><label for="w-role">RÃ´le attribuÃ© Ã  lâ€™arrivÃ©e</label><select id="w-role" data-path="welcome.roleId"></select><small>Le rÃ´le doit Ãªtre placÃ© sous le rÃ´le du bot.</small></div>
+          <div class="field"><label for="w-role">Rôle attribué à l’arrivée</label><select id="w-role" data-path="welcome.roleId"></select><small>Le rôle doit être placé sous le rôle du bot.</small></div>
           <div class="field"><label for="w-message">Message</label><textarea id="w-message" rows="3" maxlength="2000" data-path="welcome.message"></textarea><small>Variables : {user}, {username}, {server}, {memberCount}</small></div>
         </div>
         <div class="card">
@@ -107,26 +107,26 @@
           <div class="field"><label for="w-thumbnail">Miniature</label><select id="w-thumbnail" data-path="welcome.embed.thumbnail"><option value="avatar">Avatar du membre</option><option value="none">Aucune</option></select></div>
         </div>
       </div>
-      <div class="card preview-card"><h3>AperÃ§u</h3><div class="discord-preview welcome-preview"><div id="w-pv-message"></div><div class="embed" id="w-pv-embed"><img id="w-pv-avatar" alt="Avatar utilisateur"><div class="embed-title" id="w-pv-title"></div><div class="embed-desc" id="w-pv-desc"></div></div></div></div>
+      <div class="card preview-card"><h3>Aperçu</h3><div class="discord-preview welcome-preview"><div id="w-pv-message"></div><div class="embed" id="w-pv-embed"><img id="w-pv-avatar" alt="Avatar utilisateur"><div class="embed-title" id="w-pv-title"></div><div class="embed-desc" id="w-pv-desc"></div></div></div></div>
     </section>
 
     <section class="view hidden" data-view="tickets">
       <header class="view-head">
         <h2>Tickets</h2>
-        <p>OÃ¹ les tickets se crÃ©ent, qui y a accÃ¨s, et ce qu'ils gardent.</p>
+        <p>Où les tickets se créent, qui y a accès, et ce qu'ils gardent.</p>
       </header>
 
       <div class="card">
         <h3>Emplacement</h3>
         <div class="field">
-          <label for="t-category">CatÃ©gorie des tickets</label>
+          <label for="t-category">Catégorie des tickets</label>
           <select id="t-category" data-path="ticket.categoryId"></select>
-          <small>Les nouveaux salons seront crÃ©Ã©s ici.</small>
+          <small>Les nouveaux salons seront créés ici.</small>
         </div>
         <div class="field">
-          <label for="t-staff">RÃ´le de l'Ã©quipe</label>
+          <label for="t-staff">Rôle de l'équipe</label>
           <select id="t-staff" data-path="ticket.staffRoleId"></select>
-          <small>Seul ce rÃ´le voit les tickets et peut les prendre en charge.</small>
+          <small>Seul ce rôle voit les tickets et peut les prendre en charge.</small>
         </div>
         <div class="field">
           <label for="t-log">Salon des transcripts</label>
@@ -139,16 +139,16 @@
       </div>
 
       <div class="card">
-        <h3>CatÃ©gories proposÃ©es</h3>
-        <p class="card-note">Ce que le membre voit dans le menu dÃ©roulant. Maximum 25.</p>
+        <h3>Catégories proposées</h3>
+        <p class="card-note">Ce que le membre voit dans le menu déroulant. Maximum 25.</p>
         <div id="types" class="types"></div>
-        <button class="btn btn-ghost" id="add-type">Ajouter une catÃ©gorie</button>
+        <button class="btn btn-ghost" id="add-type">Ajouter une catégorie</button>
       </div>
 
       <div class="card hidden" id="copy-card">
         <h3>Reprendre une configuration</h3>
-        <p class="card-note">Copie les textes, catÃ©gories et couleurs depuis un autre
-          serveur. Les salons et rÃ´les ne sont pas copiÃ©s, ils sont propres Ã  chaque serveur.</p>
+        <p class="card-note">Copie les textes, catégories et couleurs depuis un autre
+          serveur. Les salons et rôles ne sont pas copiés, ils sont propres à chaque serveur.</p>
         <div class="row">
           <select id="copy-from" class="grow"></select>
           <button class="btn btn-ghost" id="copy-btn">Copier ici</button>
@@ -186,35 +186,35 @@
     <div class="image-drop-text">
       <strong>Glisse une image ici</strong>
       <span>ou clique pour choisir un fichier</span>
-      <small>PNG, JPG, WEBP ou GIF â€” 5 Mo max</small>
+      <small>PNG, JPG, WEBP ou GIF — 5 Mo max</small>
     </div>
   </div>
   <div id="ticket-image-preview-wrap" class="image-preview-wrap hidden">
-    <img id="ticket-image-preview" alt="AperÃ§u de l'image">
+    <img id="ticket-image-preview" alt="Aperçu de l'image">
     <button type="button" id="ticket-image-remove" class="btn btn-ghost">
       Supprimer l'image
     </button>
   </div>
 </div>
           <div class="field">
-            <label for="p-placeholder">Texte du menu dÃ©roulant</label>
+            <label for="p-placeholder">Texte du menu déroulant</label>
             <input id="p-placeholder" data-path="ticket.placeholder">
           </div>
           <div class="field">
-            <label for="p-welcome">Message affichÃ© dans le ticket</label>
+            <label for="p-welcome">Message affiché dans le ticket</label>
             <textarea id="p-welcome" rows="2" data-path="ticket.welcomeMessage"></textarea>
           </div>
         </div>
 
         <div class="card preview-card">
-          <h3>AperÃ§u</h3>
+          <h3>Aperçu</h3>
           <div class="discord-preview">
             <div class="embed" id="pv-embed">
-              <div class="embed-title" id="pv-title">â€”</div>
-              <div class="embed-desc" id="pv-desc">â€”</div>
-              <div class="embed-footer" id="pv-footer">â€”</div>
+              <div class="embed-title" id="pv-title">—</div>
+              <div class="embed-desc" id="pv-desc">—</div>
+              <div class="embed-footer" id="pv-footer">—</div>
             </div>
-            <div class="fake-select" id="pv-select">â€”</div>
+            <div class="fake-select" id="pv-select">—</div>
           </div>
         </div>
       </div>
@@ -232,7 +232,7 @@
     <section class="view hidden" data-view="appearance">
       <header class="view-head">
         <h2>Apparence</h2>
-        <p>AppliquÃ© Ã  tous les embeds du bot, sans redÃ©marrage.</p>
+        <p>Appliqué à tous les embeds du bot, sans redémarrage.</p>
       </header>
       <div class="card">
         <div class="field">
@@ -248,34 +248,34 @@
         </div>
       </div>
       <div class="card">
-        <h3>ModÃ©ration</h3>
+        <h3>Modération</h3>
         <div class="field">
           <label for="m-log">Salon des sanctions</label>
           <select id="m-log" data-path="moderation.logChannelId"></select>
         </div>
         <label class="check">
           <input type="checkbox" id="m-dm" data-path="moderation.dmOnSanction">
-          <span>PrÃ©venir le membre en message privÃ© lors d'une sanction</span>
+          <span>Prévenir le membre en message privé lors d'une sanction</span>
         </label>
       </div>
     </section>
 
     <section class="view hidden" data-view="bot">
       <header class="view-head">
-        <h2>PrÃ©sence</h2>
+        <h2>Présence</h2>
         <p>Ce que le bot affiche dans la liste des membres. Le bot n'a qu'une
-          prÃ©sence : elle s'applique Ã  tous tes serveurs.</p>
+          présence : elle s'applique à tous tes serveurs.</p>
       </header>
       <div class="card">
         <div class="row">
           <div class="field grow">
             <label for="b-type">Verbe</label>
             <select id="b-type" data-path="bot.activityType">
-              <option value="0">Joue Ã </option>
+              <option value="0">Joue à</option>
               <option value="1">Diffuse</option>
-              <option value="2">Ã‰coute</option>
+              <option value="2">Écoute</option>
               <option value="3">Regarde</option>
-              <option value="5">CompÃ©tition dans</option>
+              <option value="5">Compétition dans</option>
             </select>
           </div>
           <div class="field grow2">
@@ -288,7 +288,7 @@
           <select id="b-status" data-path="bot.status">
             <option value="online">En ligne</option>
             <option value="idle">Absent</option>
-            <option value="dnd">Ne pas dÃ©ranger</option>
+            <option value="dnd">Ne pas déranger</option>
             <option value="invisible">Invisible</option>
           </select>
         </div>
@@ -298,7 +298,7 @@
   </main>
 
   <div class="savebar hidden" id="savebar">
-    <span>Modifications non enregistrÃ©es</span>
+    <span>Modifications non enregistrées</span>
     <button class="btn btn-ghost" id="discard">Annuler</button>
     <button class="btn btn-primary" id="save">Enregistrer</button>
   </div>
@@ -309,4 +309,3 @@
 <script src="app.js"></script>
 </body>
 </html>
-

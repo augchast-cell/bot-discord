@@ -1,11 +1,11 @@
-# Secrets et configuration propre Ã  l'hÃ©bergement
+# Secrets et configuration propre à l'hébergement
 .env
 config.json
 
-# DÃ©pendances installÃ©es localement
+# Dépendances installées localement
 node_modules/
 
-# Fichiers envoyÃ©s depuis le panel
+# Fichiers envoyés depuis le panel
 public/uploads/
 
 # Fichiers temporaires et journaux
@@ -13,9 +13,8 @@ public/uploads/
 *.log
 npm-debug.log*
 
-# SystÃ¨me et Ã©diteurs
+# Système et éditeurs
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
-

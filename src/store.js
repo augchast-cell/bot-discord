@@ -33,6 +33,10 @@ const DEFAULTS = {
     dmOnSanction: true,
     logChannelId: null,
   },
+  protection: {
+    // userId du membre protégé -> liste des userId qu'il a bloqués dans Fayzen
+    blocks: {},
+  },
 };
 
 // La présence est un réglage du bot, pas du serveur : il n'en a qu'une
@@ -107,3 +111,4 @@ module.exports = {
     return this.getGlobal();
   },
 };
+

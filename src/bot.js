@@ -101,6 +101,58 @@ function canModerate(interaction, target) {
   return null;
 }
 
+function isBotBlocked(guildId, protectedUserId, authorId) {
+  return (cfg(guildId).protection.blocks[protectedUserId] || []).includes(authorId);
+}
+
+function protectionReference(message) {
+  // Identifiant court permettant au staff d'identifier l'incident sans
+  // republier le contenu potentiellement provocateur.
+  return message.id.slice(-8);
+}
+
+client.on('messageCreate', async (message) => {
+  if (!message.inGuild() || message.author.bot) return;
+
+  const contacted = new Set(message.mentions.users.keys());
+  if (message.reference?.messageId) {
+    const repliedTo = await message.fetchReference().catch(() => null);
+    if (repliedTo?.author) contacted.add(repliedTo.author.id);
+  }
+
+  const protectedUserId = [...contacted].find(userId =>
+    userId !== message.author.id && isBotBlocked(message.guild.id, userId, message.author.id)
+  );
+  if (!protectedUserId) return;
+
+  const reference = protectionReference(message);
+  try {
+    await message.delete();
+  } catch (err) {
+    console.error(`[Protection] Suppression impossible dans #${message.channel.name} : ${err.message}`);
+    return;
+  }
+
+  await message.channel.send({
+    content: `🛡️ Message masqué par Fayzen • Référence \`${reference}\``,
+    allowedMentions: { parse: [] },
+  }).catch(() => {});
+
+  await message.author.send(
+    `Ton message a été masqué sur **${message.guild.name}** car tu as mentionné ou répondu à une personne qui t'a bloqué via Fayzen. Référence : \`${reference}\``
+  ).catch(() => {});
+
+  const embed = baseEmbed(message.guild.id)
+    .setTitle('🛡️ Message masqué')
+    .addFields(
+      { name: 'Auteur', value: `${message.author.tag} (\`${message.author.id}\`)` },
+      { name: 'Personne protégée', value: `<@${protectedUserId}>` },
+      { name: 'Salon', value: `${message.channel}` },
+      { name: 'Référence', value: `\`${reference}\`` },
+    );
+  sendLog(message.guild, embed);
+});
+
 // Applique la présence définie depuis le dashboard (réglage global)
 function applyPresence() {
   const c = store.getGlobal().bot;
@@ -240,6 +292,12 @@ const commands = [
     .addIntegerOption(o => o.setName('nombre').setDescription('1 à 100').setRequired(true).setMinValue(1).setMaxValue(100))
     .addUserOption(o => o.setName('membre').setDescription('Cibler un membre'))
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
+
+  new SlashCommandBuilder().setName('bloquer').setDescription("Empêche un membre de te mentionner ou de répondre à tes messages")
+    .addUserOption(o => o.setName('membre').setDescription('Le membre à bloquer').setRequired(true)),
+
+  new SlashCommandBuilder().setName('debloquer').setDescription('Retire un membre de ta liste de blocage Fayzen')
+    .addUserOption(o => o.setName('membre').setDescription('Le membre à débloquer').setRequired(true)),
 ].map(c => c.toJSON());
 
 // ─────────────────────────────────────────────
@@ -290,6 +348,42 @@ client.on('interactionCreate', async (interaction) => {
 async function handleCommand(interaction) {
   const cmd = interaction.commandName;
   const gid = interaction.guild.id;
+
+  if (cmd === 'bloquer' || cmd === 'debloquer') {
+    const user = interaction.options.getUser('membre');
+    if (user.id === interaction.user.id) {
+      return interaction.reply({ content: '❌ Tu ne peux pas te bloquer toi-même.', ephemeral: true });
+    }
+    if (user.bot) {
+      return interaction.reply({ content: '❌ Cette protection concerne uniquement les membres.', ephemeral: true });
+    }
+
+    const protection = cfg(gid).protection;
+    const blocks = { ...protection.blocks };
+    const current = new Set(blocks[interaction.user.id] || []);
+
+    if (cmd === 'bloquer') {
+      if (current.has(user.id)) {
+        return interaction.reply({ content: `ℹ️ ${user.tag} est déjà bloqué dans Fayzen.`, ephemeral: true });
+      }
+      current.add(user.id);
+      blocks[interaction.user.id] = [...current];
+      store.set(gid, { protection: { blocks } });
+      return interaction.reply({
+        content: `✅ ${user.tag} est bloqué dans Fayzen. Ses mentions et réponses à tes messages seront masquées.`,
+        ephemeral: true,
+      });
+    }
+
+    if (!current.delete(user.id)) {
+      return interaction.reply({ content: `ℹ️ ${user.tag} n'est pas bloqué dans Fayzen.`, ephemeral: true });
+    }
+    // On conserve une liste vide : la fusion profonde du store ne supprime
+    // volontairement jamais une clé existante.
+    blocks[interaction.user.id] = [...current];
+    store.set(gid, { protection: { blocks } });
+    return interaction.reply({ content: `✅ ${user.tag} est débloqué dans Fayzen.`, ephemeral: true });
+  }
 
   if (cmd === 'avatar') {
     const user = interaction.options.getUser('membre') ?? interaction.user;
@@ -630,3 +724,4 @@ async function closeTicket(channel, closedBy) {
 }
 
 module.exports = { client, applyPresence, panelEmbed, panelComponents, panelMessage, parseTopic, closeTicket, formatUptime, welcomeVariables };
+

@@ -111,6 +111,74 @@ function protectionReference(message) {
   return message.id.slice(-8);
 }
 
+function normalizeConversationText(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function namesOfMember(member) {
+  return [...new Set([
+    member?.user?.username,
+    member?.user?.globalName,
+    member?.displayName,
+  ].map(normalizeConversationText).filter(name => name.length >= 3))];
+}
+
+function namesMemberDirectly(content, member) {
+  const text = normalizeConversationText(content);
+  return namesOfMember(member).some(name => {
+    const pattern = new RegExp(`(^|[^a-z0-9])${escapeRegExp(name)}($|[^a-z0-9])`, 'i');
+    return pattern.test(text);
+  });
+}
+
+function looksLikeDirectAddress(content) {
+  const text = normalizeConversationText(content);
+  return /^(?:(?:eh|hey|wesh)\s+)?(?:toi\b|tu\b|t['’ ]?(?:es|as|aimes|crois|penses|racontes|fais|vas|veux|peux|dois)\b|ton\b|ta\b|tes\b)/i.test(text);
+}
+
+function previousHumanMessage(message) {
+  return [...message.channel.messages.cache.values()]
+    .filter(candidate =>
+      candidate.id !== message.id &&
+      !candidate.author.bot &&
+      candidate.createdTimestamp < message.createdTimestamp
+    )
+    .sort((a, b) => b.createdTimestamp - a.createdTimestamp)[0] || null;
+}
+
+function inferProtectedUser(message) {
+  if (!message.content?.trim()) return null;
+  const blocks = cfg(message.guild.id).protection.blocks;
+  const candidates = Object.entries(blocks)
+    .filter(([, blockedIds]) => blockedIds.includes(message.author.id))
+    .map(([protectedUserId]) => protectedUserId);
+  if (!candidates.length) return null;
+
+  // Un pseudo ou surnom écrit sans @ est un signal direct et fiable.
+  const named = candidates.find(userId => {
+    const member = message.guild.members.cache.get(userId);
+    return member && namesMemberDirectly(message.content, member);
+  });
+  if (named) return named;
+
+  // Pour les phrases « tu/toi... », on ne masque que si le dernier message
+  // humain du salon vient précisément de la personne protégée et date de
+  // moins de deux minutes. Cela limite les faux positifs dans les discussions.
+  if (!looksLikeDirectAddress(message.content)) return null;
+  const previous = previousHumanMessage(message);
+  if (!previous || message.createdTimestamp - previous.createdTimestamp > 120000) return null;
+  return candidates.includes(previous.author.id) ? previous.author.id : null;
+}
+
 client.on('messageCreate', async (message) => {
   if (!message.inGuild() || message.author.bot) return;
 
@@ -122,7 +190,7 @@ client.on('messageCreate', async (message) => {
 
   const protectedUserId = [...contacted].find(userId =>
     userId !== message.author.id && isBotBlocked(message.guild.id, userId, message.author.id)
-  );
+  ) || inferProtectedUser(message);
   if (!protectedUserId) return;
 
   const reference = protectionReference(message);
@@ -723,5 +791,9 @@ async function closeTicket(channel, closedBy) {
   setTimeout(() => channel.delete().catch(() => {}), 5000);
 }
 
-module.exports = { client, applyPresence, panelEmbed, panelComponents, panelMessage, parseTopic, closeTicket, formatUptime, welcomeVariables };
+module.exports = {
+  client, applyPresence, panelEmbed, panelComponents, panelMessage, parseTopic,
+  closeTicket, formatUptime, welcomeVariables, normalizeConversationText,
+  namesMemberDirectly, looksLikeDirectAddress,
+};
 
